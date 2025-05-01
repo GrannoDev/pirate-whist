@@ -36,13 +36,13 @@
 
 		<div class="flex shrink-0">
 			<!-- Rounds -->
-			<div class="flex flex-col">
+			<div class="flex flex-col bg-red-500">
 				<span
-					class="mb-px size-16 border border-transparent text-center max-md:w-10"
+					class="bg-primary mb-px size-16 border border-transparent text-center max-md:w-10"
 				></span>
 				{#each game.rounds as round}
 					<div
-						class="border-primary bg-primary last:border-b-primary grid h-12 place-items-center rounded-l border border-b-white font-bold text-white first:rounded-tl md:h-20"
+						class="border-primary bg-primary last:border-b-primary grid h-12 place-items-center rounded-l-lg border border-b-white font-bold text-white first:rounded-tl-lg md:h-20"
 					>
 						{round.cardCount}
 					</div>

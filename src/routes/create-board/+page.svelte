@@ -9,9 +9,7 @@
 	let gameName = $state('New Game');
 	let gameNameInput: HTMLInputElement;
 	let playerInput: HTMLInputElement;
-	const maxCardCount = $derived(
-		players.length > 0 ? Math.floor(52 / players.length) : 16
-	);
+	const maxCardCount = $derived(players.length > 0 ? Math.floor(52 / players.length) : 16);
 
 	onMount(() => gameNameInput.focus());
 	function onAddPlayer(event: SubmitEvent) {
@@ -21,47 +19,10 @@
 		playerInput?.focus();
 	}
 
-	function createRounds(cardCount: number): Round[] {
-		const rounds: Round[] = [];
-		let idCounter = 1;
-
-		for (let i = cardCount; i >= 1; i--) {
-			rounds.push({
-				id: idCounter++,
-				cardCount: i
-			});
-		}
-
-		for (let i = 2; i <= cardCount; i++) {
-			rounds.push({
-				id: idCounter++,
-				cardCount: i
-			});
-		}
-
-		return rounds;
-	}
 	async function createGame() {
 		if (!cardCount) return;
-		const rounds = createRounds(cardCount);
 		const date = new Date();
-		const game: Game = {
-			id: -1,
-			name: gameName ?? `Game ${date.toDateString()}`,
-			players: players.map((p) => ({
-				name: p,
-				scores: rounds.map((r) => ({
-					roundId: r.id,
-					score: 0
-				})),
-				total: 0
-			})),
-			date,
-			rounds,
-			winner: undefined,
-			finished: false
-		};
-		await addGameToDb(game);
+		await addGameToDb(gameName ?? `Game ${date.toDateString()}`, cardCount, players);
 	}
 </script>
 
@@ -83,14 +44,7 @@
 			</fieldset>
 			<fieldset class="fieldset">
 				<legend class="fieldset-legend">Card count</legend>
-				<input
-					type="number"
-					min="1"
-					max={maxCardCount}
-					bind:value={cardCount}
-					class="input"
-					placeholder="Cards"
-				/>
+				<input type="number" min="1" max={maxCardCount} bind:value={cardCount} class="input" placeholder="Cards" />
 			</fieldset>
 			<form onsubmit={(e) => onAddPlayer(e)}>
 				<fieldset class="fieldset">
@@ -105,17 +59,11 @@
 						placeholder="Jack"
 					/>
 				</fieldset>
-				<button
-					type="submit"
-					class="btn btn-soft btn-primary"
-					disabled={player.length < 3}
-				>
-					Add Player
-				</button>
+				<button type="submit" class="btn btn-soft btn-primary" disabled={player.length < 3}>Add Player</button>
 			</form>
 			{#if players.length > 0}
-				<div>
-					<p class="mb-4 text-xs font-medium md:ml-[54px]">Players</p>
+				<div class="mt-2">
+					<p class=" mb-4 text-xs font-medium">Players</p>
 					{#each players as player, i}
 						<div class="mb-1 flex w-fit items-center gap-2 rounded">
 							<button
@@ -133,7 +81,7 @@
 							>
 								<XCircle size={20} />
 							</button>
-							<p class="w-20 text-lg">{player}</p>
+							<p class="w-20">{player}</p>
 						</div>
 					{/each}
 				</div>

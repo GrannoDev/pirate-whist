@@ -1,12 +1,12 @@
-import { db } from '$lib/db';
-import { redirect } from '@sveltejs/kit';
+import { getGameWithData } from '$lib/db';
 import type { PageLoad } from './$types';
 import { goto } from '$app/navigation';
+import type { GameData } from '$lib/types';
 export const ssr = false;
 export const load = (async ({ params }) => {
-	const game = await db.games.get(+params.id);
+	const game = await getGameWithData(+params.id);
 	if (!game) {
 		goto('/');
 	}
-	return { game };
+	return { game: game as GameData };
 }) satisfies PageLoad;

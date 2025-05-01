@@ -5,7 +5,11 @@
 	import Diamond from 'phosphor-svelte/lib/Diamond';
 	import type { CardRank, CardSuit } from '$lib/types';
 
-	const { rank, suit, className }: { rank: CardRank; suit: CardSuit; className: string } = $props();
+	const {
+		rank,
+		suit,
+		className
+	}: { rank: CardRank; suit: CardSuit; className: string } = $props();
 </script>
 
 <div
@@ -19,7 +23,9 @@
 	<div
 		class={[
 			'grid grow place-items-center',
-			suit === 'Diamonds' || suit === 'Hearts' ? 'fill-red-500 text-red-500' : 'text-black'
+			suit === 'Diamonds' || suit === 'Hearts'
+				? 'fill-red-500 text-red-500'
+				: 'text-black'
 		]}
 	>
 		{#if suit === 'Clubs'}
@@ -40,20 +46,22 @@
 	<div
 		class={[
 			'flex items-center justify-between',
-			suit === 'Diamonds' || suit === 'Hearts' ? 'fill-red-500 text-red-500' : 'text-black',
+			suit === 'Diamonds' || suit === 'Hearts'
+				? 'fill-red-500 text-red-500'
+				: 'text-black',
 			reverse ? 'flex-row-reverse' : ''
 		]}
 	>
 		<span class="text-3xl font-semibold">{rank}</span>
 
 		{#if suit === 'Clubs'}
-			<Club weight="fill" />
+			<Club size="32px" weight="fill" />
 		{:else if suit === 'Diamonds'}
-			<Diamond weight="fill" />
+			<Diamond size="32px" weight="fill" />
 		{:else if suit === 'Hearts'}
 			<Heart size="32px" weight="fill" />
 		{:else}
-			<Spade weight="fill" />
+			<Spade size="32px" weight="fill" />
 		{/if}
 	</div>
 {/snippet}
