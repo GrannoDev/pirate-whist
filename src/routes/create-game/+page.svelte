@@ -1,15 +1,16 @@
 <script lang="ts">
 	import { addGameToDb } from '$lib/db';
-	import type { Game, Round } from '$lib/types';
 	import XCircle from 'phosphor-svelte/lib/XCircle';
 	import { onMount } from 'svelte';
+	import { type PageData } from './$types';
 	let players = $state<string[]>([]);
 	let player = $state('');
 	let cardCount = $state(8);
-	let gameName = $state('New Game');
 	let gameNameInput: HTMLInputElement;
 	let playerInput: HTMLInputElement;
 	const maxCardCount = $derived(players.length > 0 ? Math.floor(52 / players.length) : 16);
+	let { data }: { data: PageData } = $props();
+	let gameName = $state(`Game ${data.count + 1}`);
 
 	onMount(() => gameNameInput.focus());
 	function onAddPlayer(event: SubmitEvent) {
@@ -29,7 +30,7 @@
 <div class="container mx-auto flex justify-center">
 	<div class="card bg-base-100 card-md w-96 shadow-sm">
 		<div class="card-body">
-			<h2 class="card-title">Create Board</h2>
+			<h2 class="card-title">Create Game</h2>
 
 			<fieldset class="fieldset">
 				<legend class="fieldset-legend">Game name</legend>
@@ -56,7 +57,7 @@
 						minlength="2"
 						required
 						class="input"
-						placeholder="Jack"
+						placeholder="Name"
 					/>
 				</fieldset>
 				<button type="submit" class="btn btn-soft btn-primary" disabled={player.length < 3}>Add Player</button>
@@ -93,7 +94,7 @@
 					onclick={createGame}
 					class="btn btn-primary col-span-2 mt-2 max-w-80"
 				>
-					Create Board
+					Create
 				</button>
 			</div>
 		</div>

@@ -5,7 +5,7 @@
 </script>
 
 <div class="container mx-auto">
-	<ul class="list bg-base-100 rounded-box w-full p-4 shadow-md">
+	<ul class="list bg-base-100 rounded-box w-full gap-1 p-4 shadow-md">
 		{#if data.games.length === 0}
 			<li>
 				<p>You have no previous games.</p>

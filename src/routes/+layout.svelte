@@ -30,8 +30,21 @@
 					</svg>
 				</div>
 				<ul tabIndex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-					<li><a href="/rules">Rules</a></li>
-					<li><a href="/create-board">Create board</a></li>
+					<li class={page.route.id === '/rules' ? 'fill-secondary text-secondary' : 'fill-primary'}>
+						<a href="/rules">
+							<ListChecks size={20} /> Rules
+						</a>
+					</li>
+					<li class={page.route.id === '/create-game' ? 'fill-secondary text-secondary' : 'fill-primary'}>
+						<a href="/create-game">
+							<CheckerBoard size={20} /> Create game
+						</a>
+					</li>
+					<li class={page.route.id === '/games' ? 'fill-secondary text-secondary' : 'fill-primary'}>
+						<a href="/games">
+							<Throphy size={20} /> Games
+						</a>
+					</li>
 				</ul>
 			</div>
 			<a href="/" class="btn btn-ghost pl-0 text-xl">
@@ -46,9 +59,9 @@
 						<ListChecks size={20} /> Rules
 					</a>
 				</li>
-				<li class={page.route.id === '/create-board' ? 'fill-secondary text-secondary' : 'fill-primary'}>
-					<a href="/create-board">
-						<CheckerBoard size={20} /> Create board
+				<li class={page.route.id === '/create-game' ? 'fill-secondary text-secondary' : 'fill-primary'}>
+					<a href="/create-game">
+						<CheckerBoard size={20} /> Create game
 					</a>
 				</li>
 				<li class={page.route.id === '/games' ? 'fill-secondary text-secondary' : 'fill-primary'}>
