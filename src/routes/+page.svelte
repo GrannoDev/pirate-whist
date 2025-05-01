@@ -4,7 +4,7 @@
 
 <div class="hero bg-base-100 min-h-[calc(100dvh_-_81px)] grow">
 	<div class="hero-content flex-col items-center justify-center lg:flex-row">
-		<Card className="w-60 bg-white" suit="Spades" rank="A" />
+		<Card className="w-60 max-md:w-40 bg-white" suit="Spades" rank="A" />
 		<div>
 			<h1 class="max-w-lg text-center text-5xl font-bold">Master the Tides of Fortune in Pirate Whist!</h1>
 			<p class="max-w-lg py-6 text-center">

@@ -9,7 +9,7 @@
 		{#if data.games.length === 0}
 			<li>
 				<p>You have no previous games.</p>
-				<a href="/create-board" class="btn btn-sm btn-soft btn-primary">Create one now</a>
+				<a href="/create-game" class="btn btn-sm btn-soft btn-primary">Create one now</a>
 			</li>
 		{:else}
 			<li class="p-4 pb-2 text-xs tracking-wide opacity-60">Your games</li>
