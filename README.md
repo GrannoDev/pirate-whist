@@ -1,38 +1,20 @@
-# sv
+# 🏴‍☠️ Pirate Whist
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+**Ready to test your wits and luck on the high seas of card games?**
 
-## Creating a project
+Pirate Whist is a thrilling trick-taking card game for 3-8 players where bidding correctly is just as important as playing your hand! Navigate changing tides as the number of cards dealt each round shifts, challenging your ability to predict how many tricks you'll plunder.
 
-If you're seeing this, you've probably already done this step. Congrats!
+**Features:**
 
-```bash
-# create a new project in the current directory
-npx sv create
+- Fast-paced, strategic gameplay.
+- Exciting rounds with variable card counts.
+- Simple scoring system based on accurate bidding.
+- Play with friends and discover who's the true Captain of the cards!
 
-# create a new project in my-app
-npx sv create my-app
-```
+**Are you ready to bid, battle, and become the Pirate Whist champion?**
 
-## Developing
+## Get Started
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+(https://piratewhist.netlify.app/)
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+**May your bids be bold and your tricks be plentiful!**

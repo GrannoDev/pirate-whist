@@ -8,5 +8,5 @@ export const load = (async ({ params }) => {
 	if (!game) {
 		goto('/');
 	}
-	return { game: game as GameData };
+	return { game: game as Required<GameData> };
 }) satisfies PageLoad;

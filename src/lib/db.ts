@@ -14,8 +14,33 @@ db.version(1).stores({
 	rounds: '++id, gameId, roundNumber',
 	playerScores: '++id, gameId, playerId, roundId, [gameId+playerId+roundId]'
 });
+db.version(2)
+	.stores({
+		games: '++id, name, winnerId, finished', // Added pointsForCorrectBid index
+		players: '++id, gameId, name, total',
+		rounds: '++id, gameId, roundNumber',
+		playerScores: '++id, gameId, playerId, roundId, [gameId+playerId+roundId]'
+	})
+	.upgrade(async (trans) => {
+		console.log('Migrating database from version 1 to 2...');
+		return await trans
+			.table('games')
+			.toCollection()
+			.modify((game) => {
+				// Provide a default value for existing games.
+				if (game.pointsForCorrectBid === undefined) {
+					// Check if the property exists
+					game.pointsForCorrectBid = 10; // Set a default value for old entries
+				}
+			});
+	});
 
-export async function addGameToDb(gameName: string, maxCardCount: number, playerNames: string[]) {
+export async function addGameToDb(
+	gameName: string,
+	maxCardCount: number,
+	playerNames: string[],
+	pointsForCorrectBid: 5 | 10
+) {
 	try {
 		// Start a transaction for atomicity (ensure all related data is saved or none)
 		return await db
@@ -32,7 +57,8 @@ export async function addGameToDb(gameName: string, maxCardCount: number, player
 						cardCount: maxCardCount,
 						winnerId: undefined, // Initially no winner
 						date: new Date(),
-						finished: false
+						finished: false,
+						pointsForCorrectBid
 					});
 
 					// 2. Generate and add rounds

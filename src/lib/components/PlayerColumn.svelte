@@ -3,7 +3,12 @@
 	import type { PlayerWithScores } from '$lib/types';
 	import { Popover } from 'bits-ui';
 
-	let { player, finished, gameId }: { player: PlayerWithScores; finished: boolean; gameId: number } = $props();
+	let {
+		player,
+		finished,
+		gameId,
+		points
+	}: { player: PlayerWithScores; finished: boolean; gameId: number; points: number } = $props();
 
 	let total = $derived(player.total);
 
@@ -12,12 +17,9 @@
 
 		updatePlayerScore(gameId, player.id, roundId, newScore);
 
-		// --- Optional: Optimistic UI Update ---
-
 		const scoreEntry = player.scores.find((s) => s.roundId === roundId);
 		if (scoreEntry) {
 			scoreEntry.score = newScore;
-			// Recalculate the local total for immediate display
 			total = player.scores.reduce((acc, curr) => acc + (curr.score ?? 0), 0);
 		}
 	}
@@ -65,17 +67,17 @@
 							<button
 								type="button"
 								tabindex="-1"
-								onclick={() => handleScoreUpdate(score.roundId, score.score - 10)}
+								onclick={() => handleScoreUpdate(score.roundId, score.score - points)}
 								class="btn btn-sm btn-dash btn-error w-fit"
 							>
-								-10
+								-{points}
 							</button>
 							<button
 								type="button"
-								onclick={() => handleScoreUpdate(score.roundId, score.score + 10)}
+								onclick={() => handleScoreUpdate(score.roundId, score.score + points)}
 								class="btn btn-sm btn-dash btn-success"
 							>
-								+10
+								+{points}
 							</button>
 							<button
 								type="button"

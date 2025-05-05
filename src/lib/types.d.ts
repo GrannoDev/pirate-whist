@@ -22,6 +22,7 @@ export interface Game {
 	winnerId: number | undefined; // Reference to the winning player's ID
 	date: Date;
 	finished: boolean;
+	pointsForCorrectBid: 5 | 10;
 }
 
 export interface Player {

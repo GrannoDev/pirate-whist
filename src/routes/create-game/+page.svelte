@@ -11,7 +11,7 @@
 	const maxCardCount = $derived(players.length > 0 ? Math.floor(52 / players.length) : 16);
 	let { data }: { data: PageData } = $props();
 	let gameName = $state(`Game ${data.count + 1}`);
-
+	let pointsGiven = $state(5);
 	onMount(() => gameNameInput.focus());
 	function onAddPlayer(event: SubmitEvent) {
 		event.preventDefault();
@@ -23,7 +23,7 @@
 	async function createGame() {
 		if (!cardCount) return;
 		const date = new Date();
-		await addGameToDb(gameName ?? `Game ${date.toDateString()}`, cardCount, players);
+		await addGameToDb(gameName ?? `Game ${date.toDateString()}`, cardCount, players, pointsGiven);
 	}
 </script>
 
@@ -42,6 +42,25 @@
 					class="input"
 					placeholder="Game One"
 				/>
+			</fieldset>
+			<fieldset class="fieldset">
+				<legend class="fieldset-legend">Points</legend>
+				<div class="flex items-center gap-1">
+					<button
+						type="button"
+						class={pointsGiven === 5 ? 'btn btn-neutral w-12' : 'btn btn-outline w-12'}
+						onclick={() => (pointsGiven = 5)}
+					>
+						5
+					</button>
+					<button
+						type="button"
+						class={pointsGiven === 10 ? 'btn btn-neutral w-12' : 'btn btn-outline w-12'}
+						onclick={() => (pointsGiven = 10)}
+					>
+						10
+					</button>
+				</div>
 			</fieldset>
 			<fieldset class="fieldset">
 				<legend class="fieldset-legend">Card count</legend>

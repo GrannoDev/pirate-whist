@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { PageData } from '../../game/[id]/$types';
 	import { deleteGame, handleFinishGame } from '$lib/db';
 	import PlayerColumn from '$lib/components/PlayerColumn.svelte';
 	import { type GameData } from '$lib/types';
 	import Crown from 'phosphor-svelte/lib/Crown';
 	import Spade from 'phosphor-svelte/lib/Spade';
+	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 	let game = $state<Required<GameData>>(data.game);
@@ -62,7 +62,7 @@
 				<!-- Rounds -->
 				<div class="flex w-full overflow-x-auto">
 					{#each game.players as player}
-						<PlayerColumn gameId={game.id} {player} finished={game.finished} />
+						<PlayerColumn points={game.pointsForCorrectBid} gameId={game.id} {player} finished={game.finished} />
 					{/each}
 				</div>
 			</div>
