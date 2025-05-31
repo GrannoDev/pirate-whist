@@ -18,7 +18,7 @@
 </script>
 
 {#if game}
-	<div class="card bg-base-100 card-md w-full shrink-0 shadow-sm">
+	<div ondblclick={(e) => e.preventDefault()} class="card bg-base-100 card-md w-full shrink-0 shadow-sm">
 		<div class="card-body p-0">
 			<div class="container mx-auto flex w-full flex-wrap items-center justify-between gap-2 p-2 max-md:justify-center">
 				<div class="flex flex-col gap-2">
