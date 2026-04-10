@@ -19,6 +19,7 @@ export interface Game {
 	id?: number; // Optional for adding, required for updating/retrieving
 	name: string;
 	cardCount: number; // Maximum card count for the game
+	startFromLow?: boolean; // Optional for backward compatibility with older stored games
 	winnerId: number | undefined; // Reference to the winning player's ID
 	date: Date;
 	finished: boolean;
