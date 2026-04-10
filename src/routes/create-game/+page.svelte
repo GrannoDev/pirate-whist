@@ -10,20 +10,47 @@
 	let playerInput: HTMLInputElement;
 	const maxCardCount = $derived(players.length > 0 ? Math.floor(52 / players.length) : 16);
 	let { data }: { data: PageData } = $props();
-	let gameName = $state(`Game ${data.count + 1}`);
-	let pointsGiven = $state(5);
-	onMount(() => gameNameInput.focus());
+	const defaultGameName = $derived(`Game ${data.count + 1}`);
+	let gameName = $state('');
+	let pointsGiven = $state<5 | 10>(5);
+	let startFromLow = $state(false);
+	const canAddPlayer = $derived(player.trim().length >= 3);
+
+	$effect(() => {
+		if (cardCount > maxCardCount) {
+			cardCount = maxCardCount;
+		}
+		if (cardCount < 1) {
+			cardCount = 1;
+		}
+	});
+
+	onMount(() => {
+		gameName = defaultGameName;
+		gameNameInput.focus();
+	});
 	function onAddPlayer(event: SubmitEvent) {
 		event.preventDefault();
-		players.push(player);
+		const normalizedPlayerName = player.trim();
+		if (normalizedPlayerName.length < 3) return;
+		players.push(normalizedPlayerName);
 		player = '';
 		playerInput?.focus();
 	}
 
 	async function createGame() {
 		if (!cardCount) return;
+		if (players.length < 3) return;
 		const date = new Date();
-		await addGameToDb(gameName ?? `Game ${date.toDateString()}`, cardCount, players, pointsGiven);
+		const trimmedGameName = gameName.trim();
+		const normalizedCardCount = Math.min(Math.max(1, Math.floor(cardCount)), maxCardCount);
+		await addGameToDb(
+			trimmedGameName || `Game ${date.toDateString()}`,
+			normalizedCardCount,
+			players,
+			pointsGiven,
+			startFromLow
+		);
 	}
 </script>
 
@@ -66,6 +93,30 @@
 				<legend class="fieldset-legend">Card count</legend>
 				<input type="number" min="1" max={maxCardCount} bind:value={cardCount} class="input" placeholder="Cards" />
 			</fieldset>
+			<fieldset class="fieldset">
+				<legend class="fieldset-legend">Round order</legend>
+				<div class="flex items-center gap-1">
+					<button
+						type="button"
+						aria-pressed={!startFromLow}
+						class={startFromLow ? 'btn btn-outline' : 'btn btn-neutral'}
+						onclick={() => (startFromLow = false)}
+					>
+						High to low
+					</button>
+					<button
+						type="button"
+						aria-pressed={startFromLow}
+						class={startFromLow ? 'btn btn-neutral' : 'btn btn-outline'}
+						onclick={() => (startFromLow = true)}
+					>
+						Low to high
+					</button>
+				</div>
+				<p class="text-base-content/70 mt-1 text-xs">
+					Choose how rounds begin: start at max cards (high to low) or start at 1 card (low to high).
+				</p>
+			</fieldset>
 			<form onsubmit={(e) => onAddPlayer(e)}>
 				<fieldset class="fieldset">
 					<legend class="fieldset-legend">Add player</legend>
@@ -73,13 +124,13 @@
 						type="text"
 						bind:value={player}
 						bind:this={playerInput}
-						minlength="2"
+						minlength="3"
 						required
 						class="input"
 						placeholder="Name"
 					/>
 				</fieldset>
-				<button type="submit" class="btn btn-soft btn-primary" disabled={player.length < 3}>Add Player</button>
+				<button type="submit" class="btn btn-soft btn-primary" disabled={!canAddPlayer}>Add Player</button>
 			</form>
 			{#if players.length > 0}
 				<div class="mt-2">
