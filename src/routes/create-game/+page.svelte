@@ -14,7 +14,7 @@
 	let pointsGiven = $state<5 | 10>(5);
 	let startFromLow = $state(false);
 	const canAddPlayer = $derived(player.trim().length >= 3);
-	const maxCardCount = $derived(players.length > 0 ? Math.max(2, Math.floor(52 / players.length)) : 52);
+	const maxCardCount = $derived(players.length > 0 ? Math.max(1, Math.floor(52 / players.length)) : 52);
 
 	$effect(() => {
 		if (cardCount > maxCardCount) {
@@ -91,14 +91,7 @@
 			</fieldset>
 			<fieldset class="fieldset">
 				<legend class="fieldset-legend">Card count</legend>
-				<input
-					type="number"
-					min="2"
-					max={maxCardCount}
-					bind:value={cardCount}
-					class="input"
-					placeholder="Cards"
-				/>
+				<input type="number" min="1" bind:value={cardCount} class="input" placeholder="Cards" />
 			</fieldset>
 			<fieldset class="fieldset">
 				<legend class="fieldset-legend">Round order</legend>
