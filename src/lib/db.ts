@@ -34,13 +34,49 @@ db.version(2)
 				}
 			});
 	});
+db.version(3)
+	.stores({
+		games: '++id, name, winnerId, finished',
+		players: '++id, gameId, name, total',
+		rounds: '++id, gameId, roundNumber',
+		playerScores: '++id, gameId, playerId, roundId, [gameId+playerId+roundId]'
+	})
+	.upgrade(async (trans) => {
+		console.log('Migrating database from version 2 to 3...');
+		return await trans
+			.table('games')
+			.toCollection()
+			.modify((game) => {
+				if (game.startFromLow === undefined) {
+					game.startFromLow = false;
+				}
+			});
+	});
 
 export async function addGameToDb(
 	gameName: string,
 	maxCardCount: number,
 	playerNames: string[],
-	pointsForCorrectBid: 5 | 10
+	pointsForCorrectBid: 5 | 10,
+	startFromLow = false
 ) {
+	const normalizedPlayerNames = playerNames.map((name) => name.trim()).filter((name) => name.length >= 3);
+	if (normalizedPlayerNames.length < 3) {
+		console.error('Error creating game: A game needs at least 3 players with valid names.');
+		return undefined;
+	}
+
+	const maxCardsForPlayerCount = Math.max(1, Math.floor(52 / normalizedPlayerNames.length));
+	const normalizedCardCount = Math.max(1, Math.floor(maxCardCount));
+	if (normalizedCardCount > maxCardsForPlayerCount) {
+		console.error(
+			`Error creating game: cardCount (${normalizedCardCount}) exceeds max (${maxCardsForPlayerCount}) for ${normalizedPlayerNames.length} players.`
+		);
+		return undefined;
+	}
+	const normalizedGameName = gameName.trim() || `Game ${new Date().toDateString()}`;
+	const normalizedPointsForCorrectBid = pointsForCorrectBid === 10 ? 10 : 5;
+
 	try {
 		// Start a transaction for atomicity (ensure all related data is saved or none)
 		return await db
@@ -53,16 +89,17 @@ export async function addGameToDb(
 				async () => {
 					// 1. Add the game
 					const gameId = await db.games.add({
-						name: gameName,
-						cardCount: maxCardCount,
+						name: normalizedGameName,
+						cardCount: normalizedCardCount,
+						startFromLow: Boolean(startFromLow),
 						winnerId: undefined, // Initially no winner
 						date: new Date(),
 						finished: false,
-						pointsForCorrectBid
+						pointsForCorrectBid: normalizedPointsForCorrectBid
 					});
 
 					// 2. Generate and add rounds
-					const roundsData = generateRounds(maxCardCount, gameId); // Assuming generateRounds still exists
+					const roundsData = generateRounds(normalizedCardCount, gameId, Boolean(startFromLow)); // Assuming generateRounds still exists
 					const addedRounds: Round[] = [];
 					for (const round of roundsData) {
 						const roundId = await db.rounds.add(round);
@@ -73,7 +110,7 @@ export async function addGameToDb(
 
 					// 3. Add players and initial scores
 					const addedPlayers: Player[] = [];
-					for (const playerName of playerNames) {
+					for (const playerName of normalizedPlayerNames) {
 						const playerId = await db.players.add({
 							gameId: gameId,
 							name: playerName,
@@ -150,6 +187,7 @@ export async function getGameWithData(gameId: number): Promise<GameData | undefi
 
 				return {
 					...game,
+					startFromLow: game.startFromLow ?? false,
 					players: playersWithScores,
 					rounds: rounds, // Use the fetched rounds
 					winner: winner // Use the calculated winner
@@ -199,24 +237,42 @@ export async function deleteGame(id: number | undefined) {
 	}
 }
 
-function generateRounds(maxCardCount: number, gameId: number) {
+function generateRounds(maxCardCount: number, gameId: number, startFromLow = false) {
 	const rounds: Round[] = [];
 	let idCounter = 0;
 
-	for (let i = maxCardCount; i >= 1; i--) {
-		rounds.push({
-			roundNumber: idCounter++,
-			gameId,
-			cardCount: i
-		});
-	}
+	if (startFromLow) {
+		for (let i = 1; i <= maxCardCount; i++) {
+			rounds.push({
+				roundNumber: idCounter++,
+				gameId,
+				cardCount: i
+			});
+		}
 
-	for (let i = 2; i <= maxCardCount; i++) {
-		rounds.push({
-			roundNumber: idCounter++,
-			gameId,
-			cardCount: i
-		});
+		for (let i = maxCardCount - 1; i >= 1; i--) {
+			rounds.push({
+				roundNumber: idCounter++,
+				gameId,
+				cardCount: i
+			});
+		}
+	} else {
+		for (let i = maxCardCount; i >= 1; i--) {
+			rounds.push({
+				roundNumber: idCounter++,
+				gameId,
+				cardCount: i
+			});
+		}
+
+		for (let i = 2; i <= maxCardCount; i++) {
+			rounds.push({
+				roundNumber: idCounter++,
+				gameId,
+				cardCount: i
+			});
+		}
 	}
 
 	return rounds;
