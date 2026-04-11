@@ -14,13 +14,14 @@
 	let pointsGiven = $state<5 | 10>(5);
 	let startFromLow = $state(false);
 	const canAddPlayer = $derived(player.trim().length >= 3);
+	const maxCardCount = $derived(players.length > 0 ? Math.max(2, Math.floor(52 / players.length)) : 52);
 
 	$effect(() => {
 		if (cardCount > maxCardCount) {
 			cardCount = maxCardCount;
 		}
-		if (cardCount < 1) {
-			cardCount = 1;
+		if (cardCount < 2) {
+			cardCount = 2;
 		}
 	});
 
@@ -42,7 +43,7 @@
 		if (players.length < 3) return;
 		const date = new Date();
 		const trimmedGameName = gameName.trim();
-		const normalizedCardCount = Math.min(Math.max(1, Math.floor(cardCount)), maxCardCount);
+		const normalizedCardCount = Math.min(Math.max(2, Math.floor(cardCount)), maxCardCount);
 		await addGameToDb(
 			trimmedGameName || `Game ${date.toDateString()}`,
 			normalizedCardCount,
@@ -90,7 +91,14 @@
 			</fieldset>
 			<fieldset class="fieldset">
 				<legend class="fieldset-legend">Card count</legend>
-				<input type="number" min="1" bind:value={cardCount} class="input" placeholder="Cards" />
+				<input
+					type="number"
+					min="2"
+					max={maxCardCount}
+					bind:value={cardCount}
+					class="input"
+					placeholder="Cards"
+				/>
 			</fieldset>
 			<fieldset class="fieldset">
 				<legend class="fieldset-legend">Round order</legend>
@@ -112,33 +120,6 @@
 						Low to high
 					</button>
 				</div>
-				<p class="text-base-content/70 mt-1 text-xs">
-					Choose how rounds begin: start at max cards (high to low) or start at 1 card (low to high).
-				</p>
-			</fieldset>
-			<fieldset class="fieldset">
-				<legend class="fieldset-legend">Round order</legend>
-				<div class="flex items-center gap-1">
-					<button
-						type="button"
-						aria-pressed={!startFromLow}
-						class={startFromLow ? 'btn btn-outline' : 'btn btn-neutral'}
-						onclick={() => (startFromLow = false)}
-					>
-						High to low
-					</button>
-					<button
-						type="button"
-						aria-pressed={startFromLow}
-						class={startFromLow ? 'btn btn-neutral' : 'btn btn-outline'}
-						onclick={() => (startFromLow = true)}
-					>
-						Low to high
-					</button>
-				</div>
-				<p class="text-base-content/70 mt-1 text-xs">
-					Choose how rounds begin: start at max cards (high to low) or start at 1 card (low to high).
-				</p>
 			</fieldset>
 			<form onsubmit={(e) => onAddPlayer(e)}>
 				<fieldset class="fieldset">
