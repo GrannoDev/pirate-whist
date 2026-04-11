@@ -91,7 +91,8 @@
 			</fieldset>
 			<fieldset class="fieldset">
 				<legend class="fieldset-legend">Card count</legend>
-				<input type="number" min="1" bind:value={cardCount} class="input" placeholder="Cards" />
+				<input type="range" min="2" max={maxCardCount} step="1" bind:value={cardCount} class="range" />
+				<div class="mt-1 text-sm tabular-nums">{cardCount}</div>
 			</fieldset>
 			<fieldset class="fieldset">
 				<legend class="fieldset-legend">Round order</legend>
