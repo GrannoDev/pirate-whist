@@ -20,8 +20,8 @@
 		if (cardCount > maxCardCount) {
 			cardCount = maxCardCount;
 		}
-		if (cardCount < 1) {
-			cardCount = 1;
+		if (cardCount < 2) {
+			cardCount = 2;
 		}
 	});
 
@@ -43,7 +43,7 @@
 		if (players.length < 3) return;
 		const date = new Date();
 		const trimmedGameName = gameName.trim();
-		const normalizedCardCount = Math.min(Math.max(1, Math.floor(cardCount)), maxCardCount);
+		const normalizedCardCount = Math.min(Math.max(2, Math.floor(cardCount)), maxCardCount);
 		await addGameToDb(
 			trimmedGameName || `Game ${date.toDateString()}`,
 			normalizedCardCount,
