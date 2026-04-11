@@ -15,6 +15,15 @@
 	let startFromLow = $state(false);
 	const canAddPlayer = $derived(player.trim().length >= 3);
 
+	$effect(() => {
+		if (cardCount > maxCardCount) {
+			cardCount = maxCardCount;
+		}
+		if (cardCount < 1) {
+			cardCount = 1;
+		}
+	});
+
 	onMount(() => {
 		gameName = defaultGameName;
 		gameNameInput.focus();
@@ -33,7 +42,7 @@
 		if (players.length < 3) return;
 		const date = new Date();
 		const trimmedGameName = gameName.trim();
-		const normalizedCardCount = Math.max(1, Math.floor(cardCount));
+		const normalizedCardCount = Math.min(Math.max(1, Math.floor(cardCount)), maxCardCount);
 		await addGameToDb(
 			trimmedGameName || `Game ${date.toDateString()}`,
 			normalizedCardCount,
@@ -82,6 +91,30 @@
 			<fieldset class="fieldset">
 				<legend class="fieldset-legend">Card count</legend>
 				<input type="number" min="1" bind:value={cardCount} class="input" placeholder="Cards" />
+			</fieldset>
+			<fieldset class="fieldset">
+				<legend class="fieldset-legend">Round order</legend>
+				<div class="flex items-center gap-1">
+					<button
+						type="button"
+						aria-pressed={!startFromLow}
+						class={startFromLow ? 'btn btn-outline' : 'btn btn-neutral'}
+						onclick={() => (startFromLow = false)}
+					>
+						High to low
+					</button>
+					<button
+						type="button"
+						aria-pressed={startFromLow}
+						class={startFromLow ? 'btn btn-neutral' : 'btn btn-outline'}
+						onclick={() => (startFromLow = true)}
+					>
+						Low to high
+					</button>
+				</div>
+				<p class="text-base-content/70 mt-1 text-xs">
+					Choose how rounds begin: start at max cards (high to low) or start at 1 card (low to high).
+				</p>
 			</fieldset>
 			<fieldset class="fieldset">
 				<legend class="fieldset-legend">Round order</legend>

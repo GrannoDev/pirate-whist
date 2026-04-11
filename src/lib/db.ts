@@ -66,7 +66,8 @@ export async function addGameToDb(
 		return undefined;
 	}
 
-	const normalizedCardCount = Math.max(1, Math.floor(maxCardCount));
+	const maxCardsForPlayerCount = Math.max(1, Math.floor(52 / normalizedPlayerNames.length));
+	const normalizedCardCount = Math.min(Math.max(1, Math.floor(maxCardCount)), maxCardsForPlayerCount);
 	const normalizedGameName = gameName.trim() || `Game ${new Date().toDateString()}`;
 	const normalizedPointsForCorrectBid = pointsForCorrectBid === 10 ? 10 : 5;
 
