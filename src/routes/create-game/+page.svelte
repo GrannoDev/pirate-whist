@@ -14,7 +14,7 @@
 	let pointsGiven = $state<5 | 10>(5);
 	let startFromLow = $state(false);
 	const canAddPlayer = $derived(player.trim().length >= 3);
-	const maxCardCount = $derived(players.length > 0 ? Math.max(2, Math.floor(52 / players.length)) : 52);
+	const maxCardCount = $derived(players.length > 0 ? Math.max(1, Math.floor(52 / players.length)) : 52);
 
 	$effect(() => {
 		if (cardCount > maxCardCount) {
